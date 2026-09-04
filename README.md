@@ -17,7 +17,7 @@ OKDP Jupyter Docker images built from the upstream [jupyter/docker-stacks](https
 
 OKDP/jupyterlab-docker layers on top of `jupyter/docker-stacks` to ship JupyterLab images tailored for the OKDP data platform: a curated set of Python / Spark / Java / Scala combinations, Spark binaries hosted by OKDP, multi-arch builds, and a handful of data-engineering libraries pre-installed.
 
-- **Curated compatibility matrix**: `.build/.versions.yml` pins the Python x Spark x Java x Scala x Hadoop combinations OKDP actually builds and tests (e.g. Python 3.10/3.11/3.12 against Spark 3.3.4, 3.4.2, 3.5.6 on Java 17 with Scala 2.12/2.13), spanning Spark 3.2.x through 4.0.x so you don't have to figure out which versions are mutually compatible.
+- **Curated compatibility matrix**: `.build/.versions.yml` pins the Python x Spark x Java x Scala x Hadoop combinations OKDP actually builds and tests (e.g. Python 3.11/3.12 against Spark 3.4.2, 3.5.6 on Java 17 with Scala 2.12/2.13), spanning Spark 3.2.x through 4.0.x so you don't have to figure out which versions are mutually compatible.
 - **Spark tarballs from `OKDP/spark-images`**: instead of pulling from `archive.apache.org`, every entry in the matrix sets `spark_download_url` to `https://github.com/OKDP/spark-images/releases/download/spark-tarballs/`, giving stable, OKDP-controlled artifacts that survive upstream archive churn.
 - **Multi-arch images (`linux/amd64` + `linux/arm64`)**: published since v1.1.0, so the same tags run on x86 CI runners, x86 Kubernetes clusters, and Apple Silicon laptops without a separate build.
 - **Extra Python packages baked into scipy-notebook and downstream images**: `scipy-notebook/requirements.txt` adds `jupyter-fs[fsspec]`, `s3fs`, `jupysql`, `trino`, `sqlalchemy-trino` and `nbgitpuller` on top of the upstream layer, so S3 browsing, Trino/SQL notebooks, and Git-based notebook sync work out of the box on OKDP.
@@ -179,16 +179,14 @@ The build is driven by [`.build/.versions.yml`](.build/.versions.yml). The [`bui
 
 ```yaml
 build-matrix:
-  python_version: ['3.10', '3.11', '3.12']
-  spark_version: [3.3.4, 3.4.2, 3.5.6]
+  python_version: ['3.11', '3.12']
+  spark_version: [3.4.2, 3.5.6]
   java_version: [17]
   scala_version: [2.12, 2.13]
 ```
 
-→ produces these 6 compatible combinations (filtered against the `compatibility-matrix`; incompatible pairs like `python 3.10 + spark 3.5.x` or `python 3.12 + spark 3.x` are silently dropped):
+→ produces these 6 compatible combinations (filtered against the `compatibility-matrix`; incompatible pairs like `python 3.12 + spark 3.x` are silently dropped):
 
-- `spark3.3.4-python3.10-java17-scala2.12`
-- `spark3.3.4-python3.10-java17-scala2.13`
 - `spark3.4.2-python3.11-java17-scala2.12`
 - `spark3.4.2-python3.11-java17-scala2.13`
 - `spark3.5.6-python3.11-java17-scala2.12`
